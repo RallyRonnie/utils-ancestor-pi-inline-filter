@@ -1,6 +1,6 @@
 {
   "name": "@agile-central-technical-services/utils-ancestor-pi-inline-filter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A portfolio item ancestor in-line filter override for Technical Services apps",
   "main": "index.js",
   "scripts": {
@@ -29,6 +29,5 @@
     "url": "https://github.com/RallyTechServices/utils-ancestor-pi-inline-filter/issues"
   },
   "homepage": "https://github.com/RallyTechServices/utils-ancestor-pi-inline-filter#readme",
-  "dependencies": {
-  }
+  "dependencies": {}
 }
