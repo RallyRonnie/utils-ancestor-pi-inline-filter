@@ -8,7 +8,7 @@ The plugin will:
 * render that field as a artifact search combobox quick filter
 * apply the quick filter to the current advanced filters
 
-![Screenshot](./screenshot.png)
+![Screenshot](https://github.com/RallyTechServices/utils-ancestor-pi-inline-filter/raw/master/screenshot.png)
 
 ## Installation
 1. Install using npm (or yarn) `npm install '@agile-central-technical-services/utils-ancestor-pi-inline-filter' -D`
