@@ -1,0 +1,34 @@
+{
+  "name": "@agile-central-technical-services/utils-ancestor-pi-inline-filter",
+  "version": "1.0.0",
+  "description": "A portfolio item ancestor in-line filter override for Technical Services apps",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RallyTechServices/utils-ancestor-pi-inline-filter.git"
+  },
+  "keywords": [
+    "rally",
+    "agile",
+    "central",
+    "technical",
+    "services",
+    "inline",
+    "portfolio",
+    "item",
+    "filter",
+    "ancestor",
+    "advanced"
+  ],
+  "author": "Tyr Johanson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RallyTechServices/utils-ancestor-pi-inline-filter/issues"
+  },
+  "homepage": "https://github.com/RallyTechServices/utils-ancestor-pi-inline-filter#readme",
+  "dependencies": {
+  }
+}
