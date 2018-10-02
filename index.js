@@ -4,15 +4,22 @@ Ext.define('Utils.AncestorPiInlineFilter', {
     modelName: undefined,
     customFilterNamePrefix: "AncestorPiInlineFilter.",
     
+    constructor: function(config) {
+      this.callParent(arguments);
+      if ( this.modelName ) {
+          this.modelName = this.modelName.toLowerCase()
+      }
+    },
+    
     _hasPiAncestor: function(modelName) {
-        return _.contains(['HierarchicalRequirement', 'UserStory', 'Defect'], modelName) || modelName.startsWith('PortfolioItem');
+        return _.contains(['hierarchicalrequirement', 'userstory', 'defect'], modelName) || modelName.startsWith('portfolioitem');
     },
     
     _pisAbove: function(modelName) {
         var result = [];
-        if ( _.contains(['HierarchicalRequirement', 'UserStory', 'Defect'], modelName) ) {
+        if ( _.contains(['hierarchicalrequirement', 'userstory', 'defect'], modelName) ) {
             result = this.portfolioItemTypes
-        } else if ( modelName.startsWith('PortfolioItem') ) {
+        } else if ( modelName.startsWith('portfolioitem') ) {
             var startIndex = _.findIndex(this.portfolioItemTypes, function(piType) {
                return piType.get('TypePath') === modelName; 
             });
@@ -127,11 +134,11 @@ Ext.define('Utils.AncestorPiSearchComboBox', {
     
     propertyPrefix: function() {
        var property;
-       if ( this.artifactTypeName === 'HierarchicalRequirement' || this.artifactTypeName === 'UserStory') {
+       if ( this.artifactTypeName === 'hierarchicalrequirement' || this.artifactTypeName === 'userstory') {
            property = 'PortfolioItem';
-       } else if ( this.artifactTypeName === 'Defect' ) {
+       } else if ( this.artifactTypeName === 'defect' ) {
            property = 'Requirement.PortfolioItem'; 
-       } else if ( this.artifactTypeName.startsWith('PortfolioItem') ) {
+       } else if ( this.artifactTypeName.startsWith('portfolioitem') ) {
            property = 'Parent';
        }
        
