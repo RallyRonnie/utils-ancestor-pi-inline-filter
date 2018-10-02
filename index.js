@@ -4,13 +4,6 @@ Ext.define('Utils.AncestorPiInlineFilter', {
     modelName: undefined,
     customFilterNamePrefix: "AncestorPiInlineFilter.",
     
-    constructor: function(config) {
-      this.callParent(arguments);
-      if ( this.modelName ) {
-          this.modelName = this.modelName.toLowerCase()
-      }
-    },
-    
     _hasPiAncestor: function(modelName) {
         return _.contains(['hierarchicalrequirement', 'userstory', 'defect'], modelName) || modelName.startsWith('portfolioitem');
     },
@@ -31,6 +24,9 @@ Ext.define('Utils.AncestorPiInlineFilter', {
     },
     
     initComponent: function() {
+        if ( this.modelName ) {
+            this.modelName = this.modelName.toLowerCase();
+        }
         var filterFactoryOverrides = {};
         var additionalFields = []
         if ( this._hasPiAncestor(this.modelName) ) {
