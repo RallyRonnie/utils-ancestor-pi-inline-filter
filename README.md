@@ -24,22 +24,19 @@ The plugin will:
     addGridboard: function() {
         this.add({
             xtype: 'rallygridboard',
-            modelNames: this.modelNames,
+            ...
             plugins: [
                 {
                     ptype: 'rallygridboardinlinefiltercontrol',
                     inlineFilterButtonConfig: {
-                        stateful: true,
-                        stateId: this.getContext().getScopedStateId('filters-1'),
-                        modelNames: this.modelNames,
+                        ...
                         inlineFilterPanelConfig: {
                             quickFilterPanelConfig: {
+                                // Supply a list of Portfolio Item Types. For example `Rally.data.util.PortfolioItemHelper.getPortfolioItemTypes()`
                                 portfolioItemTypes: this.portfolioItemTypes,
+                                // Set the TypePath of the model item that is being filtered. For example: 'PortfolioItem/Feature' or 'Defect'
                                 modelName: this.modelNames[0],
-                                whiteListFields: [
-                                   'Tags',
-                                   'Milestones'
-                                ]
+                                ...
                             }
                         }
                     }
