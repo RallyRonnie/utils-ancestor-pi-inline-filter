@@ -3,11 +3,32 @@ Ext.define('Utils.AncestorPiInlineFilter', {
     portfolioItemTypes: [],
     modelName: undefined,
     customFilterNamePrefix: "AncestorPiInlineFilter.",
+    
+    _hasPiAncestor: function(modelName) {
+        return _.contains(['HierarchicalRequirement', 'UserStory', 'Defect'], modelName) || modelName.startsWith('PortfolioItem');
+    },
+    
+    _pisAbove: function(modelName) {
+        var result = [];
+        if ( _.contains(['HierarchicalRequirement', 'UserStory', 'Defect'], modelName) ) {
+            result = this.portfolioItemTypes
+        } else if ( modelName.startsWith('PortfolioItem') ) {
+            var startIndex = _.findIndex(this.portfolioItemTypes, function(piType) {
+               return piType.get('TypePath') === modelName; 
+            });
+            if ( startIndex >= 0 && startIndex < this.portfolioItemTypes.length - 1) {
+                result = this.portfolioItemTypes.slice(startIndex+1);
+            }
+        }
+        return result;
+    },
+    
     initComponent: function() {
         var filterFactoryOverrides = {};
         var additionalFields = []
-        if ( _.contains(['HierarchicalRequirement', 'UserStory', 'Defect'], this.modelName) ) {
-            _.each(this.portfolioItemTypes, function(piType) {
+        if ( this._hasPiAncestor(this.modelName) ) {
+            var pisAbove = this._pisAbove(this.modelName);
+            _.each(pisAbove, function(piType) {
                 var typePath = piType.get('TypePath');
                 var customFilterName = this.customFilterNamePrefix + typePath;
                 var displayName = 'Portfolio Item / ' + piType.get('Name');
@@ -15,7 +36,7 @@ Ext.define('Utils.AncestorPiInlineFilter', {
                 filterFactoryOverrides[customFilterName] = {
                        xtype: 'ancestorpisearchcombobox',
                        portfolioItemType: typePath, // The artifact type to search for
-                       portfolioItemTypes: this.portfolioItemTypes,  // List of portfolio item types
+                       piTypesAbove: pisAbove,  // List of portfolio item types
                        artifactTypeName: this.modelName, // The artifact type we are filtering
                        storeConfig: {
                           models: typePath,
@@ -53,7 +74,7 @@ Ext.define('Utils.AncestorPiInlineFilter', {
     // Must strip out these synthetic fields if the modelName has changed from one of the ones we know
     // how to filter
     _createFields: function() {
-        if ( !_.contains(['HierarchicalRequirement', 'UserStory', 'Defect'], this.modelName) ) {
+        if ( !this._hasPiAncestor(this.modelName) ) {
             // Strip out the custom filters from this.fields and this.initialFilters
             this.fields = _.filter(this.fields, function(field) {
                 return !Ext.String.startsWith(field, this.customFilterNamePrefix);
@@ -73,7 +94,7 @@ Ext.define('Utils.AncestorPiSearchComboBox', {
     parentField: 'PortfolioItem.Parent.',
    
     artifactTypeName: undefined, // The name of the model that will be filtered
-    portfolioItemTypes: [],
+    piTypesAbove: [],
     
     initComponent: function() {
         // Compensate for parent constructor assuming that filter value is OidFromRef
@@ -106,17 +127,16 @@ Ext.define('Utils.AncestorPiSearchComboBox', {
     
     propertyPrefix: function() {
        var property;
-       switch(this.artifactTypeName) {
-           case 'HierarchicalRequirement':
-               property = 'PortfolioItem';
-               break;
-            case 'Defect':
-                property = 'Requirement.PortfolioItem';
-                break;
+       if ( this.artifactTypeName === 'HierarchicalRequirement' || this.artifactTypeName === 'UserStory') {
+           property = 'PortfolioItem';
+       } else if ( this.artifactTypeName === 'Defect' ) {
+           property = 'Requirement.PortfolioItem'; 
+       } else if ( this.artifactTypeName.startsWith('PortfolioItem') ) {
+           property = 'Parent';
        }
        
        if ( property ) {
-           _.forEach(this.portfolioItemTypes, function(piType) {
+           _.forEach(this.piTypesAbove, function(piType) {
                if ( piType.get('TypePath') == this.portfolioItemType ) {
                    return false;
                } else {
