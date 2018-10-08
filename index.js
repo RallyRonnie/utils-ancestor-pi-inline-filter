@@ -15,7 +15,7 @@ Ext.define('Utils.AncestorPiInlineFilter', {
         }
         else if (modelName.startsWith('portfolioitem')) {
             var startIndex = _.findIndex(this.portfolioItemTypes, function(piType) {
-                return piType.get('TypePath') === modelName;
+                return piType.get('TypePath').toLowerCase() === modelName;
             });
             if (startIndex >= 0 && startIndex < this.portfolioItemTypes.length - 1) {
                 result = this.portfolioItemTypes.slice(startIndex + 1);
@@ -147,7 +147,7 @@ Ext.define('Utils.AncestorPiSearchComboBox', {
             // Now add .Parent for every PI level above the lowest until we get to the
             // desired PI type
             _.forEach(this.piTypesAbove, function(piType) {
-                if (piType.get('TypePath') == this.portfolioItemType) {
+                if (piType.get('TypePath').toLowerCase() == this.portfolioItemType.toLowerCase()) {
                     return false;
                 }
                 else {
