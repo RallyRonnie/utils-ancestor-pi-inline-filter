@@ -112,13 +112,13 @@ Ext.define('Utils.AncestorPiSearchComboBox', {
 
     getFilter: function() {
 
-        var value = this.lastValue;
+        var record = this.getRecord();
         var propertyPrefix = this.propertyPrefix();
         var filters = []
-        if (value) {
+        if (record) {
             filters.push({
                 property: propertyPrefix + ".ObjectUUID",
-                value: value
+                value: record.get('ObjectUUID')
             });
         }
         else {
