@@ -149,7 +149,7 @@ Ext.define('Utils.AncestorPiSearchComboBox', {
         var propertyPrefix = this.propertyPrefix();
         var filters = []
         // If the value is a UUID, then use it, otherwise ignore values the user might be typing in
-        if (value && Utils.AncestorPiSearchComboBox.UUID_REGEX.test(value)) {
+        if (value && this.statics().UUID_REGEX.test(value)) {
             filters.push({
                 property: propertyPrefix + ".ObjectUUID",
                 value: value
