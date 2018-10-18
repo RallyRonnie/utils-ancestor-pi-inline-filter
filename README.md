@@ -7,6 +7,7 @@ The plugin will:
 * add a filter field for each portfolio level into the quick filter chooser
 * render that field as a artifact search combobox quick filter
 * apply the quick filter to the current advanced filters
+* fix the `PreliminaryEstimate` in-line editor to sort by item value
 
 ![Screenshot](https://github.com/RallyTechServices/utils-ancestor-pi-inline-filter/raw/master/screenshot.png)
 
