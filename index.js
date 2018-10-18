@@ -63,7 +63,7 @@ Ext.define('Utils.AncestorPiInlineFilter', {
                 additionalFields: additionalFields
             }, function(a, b) {
                 if (_.isArray(a)) {
-                    return a.concat(b)
+                    return _.uniq(a.concat(b), 'name') // Strip duplicates by name that can occur from state
                 }
             });
 
