@@ -36,7 +36,6 @@ Ext.define('Utils.AncestorPiInlineFilter', {
                 var typePath = piType.get('TypePath');
                 var customFilterName = this.customFilterNamePrefix + typePath;
                 var displayName = 'Portfolio Item / ' + piType.get('Name');
-
                 filterFactoryOverrides[customFilterName] = {
                     xtype: 'ancestorpisearchcombobox',
                     portfolioItemType: typePath, // The artifact type to search for
@@ -75,19 +74,24 @@ Ext.define('Utils.AncestorPiInlineFilter', {
         this.callParent(arguments);
     },
 
-    // Must strip out these synthetic fields if the modelName has changed from one of the ones we know
-    // how to filter
     _createFields: function() {
-        if (!this._hasPiAncestor(this.modelName)) {
-            // Strip out the custom filters from this.fields and this.initialFilters
-            this.fields = _.filter(this.fields, function(field) {
-                return !Ext.String.startsWith(field, this.customFilterNamePrefix);
-            }, this);
-            this.initialFilters = _.filter(this.initialFilters, function(filter) {
-                return !Ext.String.startsWith(filter.name, this.customFilterNamePrefix);
-            }, this);
-        }
+        // Strip out the custom filters from this.fields and this.initialFilters
+        this.fields = _.filter(this.fields, function(field) {
+            return this._filterInvalidAncestorFilters(field);
+        }, this);
+        this.initialFilters = _.filter(this.initialFilters, function(filter) {
+            return this._filterInvalidAncestorFilters(filter.name);
+        }, this);
         this.callParent(arguments);
+    },
+
+    /**
+     * This will exclude any field restored from state that we didn't explicitly add into the Factory
+     * for the current model type. This prevents changes in model types from trying to build an invalid filter
+     * for that new model type.
+     */
+    _filterInvalidAncestorFilters: function(name) {
+        return !name.startsWith(this.customFilterNamePrefix) || Rally.ui.inlinefilter.FilterFieldFactory.hasOwnProperty(name)
     }
 });
 
@@ -99,6 +103,9 @@ Ext.define('Utils.AncestorPiSearchComboBox', {
 
     artifactTypeName: undefined, // The name of the model that will be filtered
     piTypesAbove: [],
+    statics: {
+        UUID_REGEX: /([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})/
+    },
 
     initComponent: function() {
         // Compensate for parent constructor assuming that filter value is OidFromRef
@@ -112,13 +119,14 @@ Ext.define('Utils.AncestorPiSearchComboBox', {
 
     getFilter: function() {
 
-        var record = this.getRecord();
+        var value = this.lastValue;
         var propertyPrefix = this.propertyPrefix();
         var filters = []
-        if (record) {
+        // If the value is a UUID, then use it, otherwise ignore values the user might be typing in
+        if (value && Utils.AncestorPiSearchComboBox.UUID_REGEX.test(value)) {
             filters.push({
                 property: propertyPrefix + ".ObjectUUID",
-                value: record.get('ObjectUUID')
+                value: value
             });
         }
         else {
