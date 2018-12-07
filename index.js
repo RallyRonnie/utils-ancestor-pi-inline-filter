@@ -1,3 +1,4 @@
+/* globals Rally */
 // Fix the PreliminaryEstimate renderer to sort by value
 Rally.ui.renderer.GridEditorFactory.editorRenderers['PreliminaryEstimate'] = function(field) {
     return {
@@ -51,6 +52,10 @@ Ext.define('Utils.AncestorPiInlineFilter', {
     },
 
     initComponent: function() {
+        if (!this.context) {
+            this.context = Rally.getApp().getContext().getDataContext();
+        }
+
         if (this.modelName) {
             this.modelName = this.modelName.toLowerCase();
         }
@@ -68,6 +73,7 @@ Ext.define('Utils.AncestorPiInlineFilter', {
                     piTypesAbove: pisAbove, // List of portfolio item types
                     artifactTypeName: this.modelName, // The artifact type we are filtering
                     storeConfig: {
+                        context: this.context,
                         models: typePath,
                         autoLoad: true
                     },
@@ -135,11 +141,13 @@ Ext.define('Utils.AncestorPiSearchComboBox', {
 
     initComponent: function() {
         // Compensate for parent constructor assuming that filter value is OidFromRef
-        this.storeConfig.filters = [{
-            property: this.valueField,
-            value: this.value
-        }];
         this.storeConfig.filters = [];
+        if (this.value) {
+            this.storeConfig.filters = [{
+                property: this.valueField,
+                value: this.value
+            }];
+        }
         this.callParent(arguments);
     },
 
