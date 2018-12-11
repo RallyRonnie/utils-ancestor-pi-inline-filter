@@ -32,7 +32,7 @@ Ext.define('Utils.AncestorPiInlineFilter', {
     customFilterNamePrefix: "AncestorPiInlineFilter.",
 
     _hasPiAncestor: function(modelName) {
-        return _.contains(['hierarchicalrequirement', 'userstory', 'defect'], modelName) || modelName.startsWith('portfolioitem');
+        return _.contains(['hierarchicalrequirement', 'userstory', 'defect'], modelName) || Ext.String.startsWith(modelName, 'portfolioitem');
     },
 
     _pisAbove: function(modelName) {
@@ -40,7 +40,7 @@ Ext.define('Utils.AncestorPiInlineFilter', {
         if (_.contains(['hierarchicalrequirement', 'userstory', 'defect'], modelName)) {
             result = this.portfolioItemTypes
         }
-        else if (modelName.startsWith('portfolioitem')) {
+        else if (Ext.String.startsWith(modelName, 'portfolioitem')) {
             var startIndex = _.findIndex(this.portfolioItemTypes, function(piType) {
                 return piType.get('TypePath').toLowerCase() === modelName;
             });
@@ -123,7 +123,7 @@ Ext.define('Utils.AncestorPiInlineFilter', {
      * for that new model type.
      */
     _filterInvalidAncestorFilters: function(name) {
-        return !name.startsWith(this.customFilterNamePrefix) || Rally.ui.inlinefilter.FilterFieldFactory.hasOwnProperty(name)
+        return !Ext.String.startsWith(name, this.customFilterNamePrefix) || Rally.ui.inlinefilter.FilterFieldFactory.hasOwnProperty(name)
     }
 });
 
@@ -181,7 +181,7 @@ Ext.define('Utils.AncestorPiSearchComboBox', {
         else if (this.artifactTypeName === 'defect') {
             property = 'Requirement.' + this.piTypesAbove[0].get('Name');
         }
-        else if (this.artifactTypeName.startsWith('portfolioitem')) {
+        else if (Ext.String.startsWith(this.artifactTypeName, 'portfolioitem')) {
             property = 'Parent';
         }
 
