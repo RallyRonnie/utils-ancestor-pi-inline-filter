@@ -52,8 +52,8 @@ Ext.define('Utils.AncestorPiInlineFilter', {
     },
 
     initComponent: function() {
-        if (!this.context) {
-            this.context = Rally.getApp().getContext().getDataContext();
+        if (!this.dataContext) {
+            this.dataContext = Rally.getApp().getContext().getDataContext();
         }
 
         if (this.modelName) {
@@ -73,7 +73,7 @@ Ext.define('Utils.AncestorPiInlineFilter', {
                     piTypesAbove: pisAbove, // List of portfolio item types
                     artifactTypeName: this.modelName, // The artifact type we are filtering
                     storeConfig: {
-                        context: this.context,
+                        context: this.dataContext,
                         models: typePath,
                         autoLoad: true
                     },
