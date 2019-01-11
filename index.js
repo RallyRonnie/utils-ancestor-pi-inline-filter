@@ -82,7 +82,8 @@ Ext.define('Utils.AncestorPiInlineFilter', {
                     noEntryText: 'No ' + displayName,
                     emptyText: 'Search ' + displayName + 's...',
                     allowClear: false,
-                    valueField: 'ObjectUUID' // Must use ObjectUUID to align with the state that is saved by inlinefilterbutton
+                    valueField: 'ObjectUUID', // Must use ObjectUUID to align with the state that is saved by inlinefilterbutton
+                    forceSelection: false
                 };
                 additionalFields.push({
                     name: customFilterName,
@@ -139,15 +140,41 @@ Ext.define('Utils.AncestorPiSearchComboBox', {
         UUID_REGEX: /([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})/
     },
 
-    initComponent: function() {
-        // Compensate for parent constructor assuming that filter value is OidFromRef
-        this.storeConfig.filters = [];
-        if (this.value) {
-            this.storeConfig.filters = [{
-                property: this.valueField,
-                value: this.value
-            }];
+    constructor: function(config) {
+        if (config.value) {
+            Ext.merge(config, {
+                storeConfig: {
+                    filters: Rally.data.wsapi.Filter.or([{
+                            property: config.valueField, // Compensate for parent constructor assuming that filter value is OidFromRef
+                            value: config.value
+                        }
+                        /*, {
+                                                property: 'ObjectID',
+                                                operator: '!=',
+                                                value: 0
+                                            }*/
+                    ])
+                }
+            });
         }
+
+        //this.callSuper(arguments);
+        // Get super super method (skip the extended ArtifactSearchComboBox.constructor()
+        return this.superclass.superclass['constructor'].apply(this, arguments);
+    },
+
+    initComponent: function() {
+        this.on('change', function(cmp, newValue, oldValue) {
+            if (newValue == "") {
+                this.store.load({
+                    filters: []
+                })
+            }
+        }, this)
+        return this.callParent(arguments);
+    },
+
+    setValue: function() {
         this.callParent(arguments);
     },
 
